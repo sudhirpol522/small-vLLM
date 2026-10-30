@@ -4,7 +4,7 @@ Read [Understanding the KV Cache Manager: Prefix Caching and Chunked Prefill](do
 
 For a guided introduction to the repository, start with the [architecture](docs/architecture.md), then [foundations](docs/foundations.md) and the [KV cache manager walkthrough](docs/kv-cache-manager.md). The [documentation index](docs/README.md) lists available and planned chapters.
 
-The website version is being prepared in [website PR #2](https://github.com/sudhirpol522/sudhirpol522.github.io/pull/2). It uses the site's article layout and links back to this repository.
+Read the [website version](https://sudhirpol522.github.io/blog/small-vllm-kv-cache-manager/) on the [Writing page](https://sudhirpol522.github.io/writing/). It uses the site's article layout and links back to this repository.
 
 Related articles: [GPTQ](https://sudhirpol522.github.io/blog/demystifying-gptq/), [AWQ](https://sudhirpol522.github.io/blog/math-of-awq/), and [speculative decoding](https://sudhirpol522.github.io/blog/speculative-decoding-math/).
 

@@ -1,70 +1,30 @@
 # small-vLLM
 
-A compact, vLLM-style inference engine for learning how LLM serving works. The implementation brings together paged KV storage, prefix caching, continuous batching, chunked prefill, model execution, and an OpenAI-compatible HTTP interface.
+A compact, vLLM-style LLM inference engine in Python, built to make the serving pipeline easier to understand through readable code.
 
-Most of the engine lives in [`serve.py`](serve.py). The source also uses the name **TinyServe**. The documentation follows a request through the engine, then explains each component with code, worked examples, and state changes.
+## Features
 
-## Architecture
+- Paged KV cache with prefix reuse and reference-counted blocks.
+- Continuous batching, chunked prefill, and request preemption.
+- FlashAttention and a PyTorch reference attention backend.
+- CUDA graphs for decode execution.
+- OpenAI-compatible HTTP endpoints with streaming.
+- GPTQ and AWQ weight-quantization integrations.
 
-```mermaid
-flowchart TD
-    Request["HTTP or offline request"] --> Engine["Engine: coordinate each step"]
-    Engine --> Scheduler["Scheduler: select requests and tokens"]
-    Scheduler --> KV["KVCacheManager: track and assign blocks"]
-    Engine --> Runner["ModelRunner: prepare and execute the batch"]
-    Runner --> Model["Model and attention"]
-    Runner -->|"sampled tokens and logits"| Engine
-    Engine --> Output["Detokenizer and Output"]
-```
+## Code
 
-`Engine.step()` asks the scheduler for a batch, sends it to the runner, and handles the results. The KV cache manager tracks block ownership and prefix identities. The runner allocates the GPU tensors that hold the actual KV data.
-
-For HTTP requests, `build_app` and `AsyncEngine` connect the server to the engine. The offline entry point is `Engine.generate`.
-
-## Start reading
-
-| Reader's question | Start here |
+| File | Purpose |
 | --- | --- |
-| What happens to a request? | [Architecture and request lifecycle](docs/architecture.md) |
-| What are prefix caching and chunked prefill? | [Foundations](docs/foundations.md) |
-| How are KV blocks reused, allocated, and released? | [KV cache manager walkthrough](docs/kv-cache-manager.md) |
-| What should I read next? | [Reading order and chapter roadmap](docs/README.md) |
-| Where is a particular class or function? | [Source and documentation index](docs/api-index.md) |
+| [`serve.py`](serve.py) | Requests, KV cache management, scheduling, model execution, and serving. |
+| [`quantization/`](quantization/) | Quantization configuration, linear layers, and backend integration. |
+| [`inference.py`](inference.py) | Example streaming client. |
 
-## Source map
+## Blog
 
-| Location | Responsibility |
-| --- | --- |
-| [`serve.py`](serve.py) | Request state, scheduling, KV bookkeeping, attention, model execution, sampling, engine, HTTP server, demos, and benchmarks. |
-| [`quantization/`](quantization/) | Quantization policy, linear-layer interface, GPTQ/AWQ weight handling, and Marlin execution integration. |
-| [`inference.py`](inference.py) | Example streaming client for the HTTP server. |
-| [`integrate_serve_quantization.py`](integrate_serve_quantization.py) | Source-transformation utility used to integrate quantization. |
-| [`serve.py.before_quantization`](serve.py.before_quantization) | Historical implementation before quantization integration. |
+I’m documenting the engine class by class and function by function on [my technical blog](https://sudhirpol522.github.io/writing/).
 
-## Entry points
+The first article explains the KV cache manager with code examples and Excalidraw diagrams. Read it on the [Writing page](https://sudhirpol522.github.io/blog/small-vllm-kv-cache-manager/).
 
-With the Python dependencies installed, the bookkeeping demo runs without loading a model or allocating GPU KV tensors:
+## Documentation
 
-```bash
-python serve.py kv-demo
-```
-
-Model inference requires a compatible CUDA environment and model access. To start the server and use the existing client:
-
-```bash
-python serve.py serve --model Qwen/Qwen3-8B --port 8000
-```
-
-In another terminal:
-
-```bash
-python inference.py
-```
-
-These commands follow the current CLI. A versioned dependency specification and reproducible installation guide are still to be documented; GPU execution was not validated while preparing this documentation.
-
-## Documentation status
-
-The architecture overview, foundations, and KV cache manager walkthrough are available as drafts. The [index](docs/api-index.md) distinguishes existing explanations from planned coverage for the remaining classes and functions. Some supplied diagrams still need the corrections listed in the [review notes](docs/review-notes.md).
-
-Source inspected: [`62bfced`](https://github.com/sudhirpol522/small-vLLM/commit/62bfcedf01abcaa3df3d1905fd6028558e35dead). Source links in the detailed documentation are pinned to that revision.
+[Overview](docs/overview.md) · [Reading guide](docs/README.md) · [Blog and diagrams](BLOG.md)
