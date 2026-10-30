@@ -23,8 +23,4 @@ A compact, vLLM-style LLM inference engine in Python, built to make the serving 
 
 I’m documenting the engine class by class and function by function on [my technical blog](https://sudhirpol522.github.io/writing/).
 
-The first article explains the KV cache manager with code examples and Excalidraw diagrams. Read it on the [Writing page](https://sudhirpol522.github.io/blog/small-vllm-kv-cache-manager/).
-
-## Documentation
-
-[Overview](docs/overview.md) · [Reading guide](docs/README.md) · [Blog and diagrams](BLOG.md)
+The first article, [Understanding the KV Cache Manager: Prefix Caching and Chunked Prefill](https://sudhirpol522.github.io/blog/small-vllm-kv-cache-manager/), explains the manager with code examples and Excalidraw diagrams.
